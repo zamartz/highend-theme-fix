@@ -68,8 +68,13 @@ if( is_singular ( 'clients' ) ||
 									<?php } ?>
 									<?php /* START AUTHOR BOX CHANGE
 									https://developers.google.com/structured-data/rich-snippets/articles#article_markup_properties */
+									if (get_post_meta( get_the_ID(), 'publisher_logo' )){
 									$custom_logo = get_post_meta( get_the_ID(), 'publisher_logo' );
-									$custom_publisher = get_post_meta( get_the_ID(), 'publisher' );
+									}else{ $custom_logo = "";}
+
+									if (get_post_meta( get_the_ID(), 'publisher' )){
+										$custom_publisher = get_post_meta( get_the_ID(), 'publisher' );
+									}else{$custom_publisher = "";}
 
 									function imageration($the_image_url,$best_width,$best_height){
 										list($img_width, $img_height, $ing_type, $img_attr) = getimagesize($the_image_url);
@@ -101,7 +106,7 @@ if( is_singular ( 'clients' ) ||
 									<div class="publisher-info-update hidden"  itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
 									    <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
 									    <?php
-											if($custom_logo[0]) {
+											if($custom_logo) {
 												list ($custom_width,$custom_height) = imageration($custom_logo[0],600,60);
 												echo '<meta itemprop="url" content=""'.$custom_logo[0].'">';
 												echo '<meta itemprop="width" content="'.$custom_width.'">';
@@ -115,7 +120,7 @@ if( is_singular ( 'clients' ) ||
 										?>
 										</div>
 										<?php
-									    if($custom_publisher[0]) {
+									    if($custom_publisher) {
 												echo '<span class="author-box-publisher2 hidden" itemprop="name">'.$custom_publisher[0].'</span>';
 											}else{
 												echo  '<span class="author-box-publisher3 hidden" itemprop="name">';
@@ -126,7 +131,7 @@ if( is_singular ( 'clients' ) ||
 									</div>
 									<span class="author-box-datemod2 hidden" itemprop="dateModified"><?php echo get_the_time('M j, Y'); ?></span>
 									<span class="author-box-entryof hidden" itemprop="mainEntityOfPage"><?php echo the_permalink(); ?></span>
-<?php /* END AUTOR BOX CHANGE */?>
+									<?php /* END AUTOR BOX CHANGE */?>
 									<?php if ( hb_options('hb_blog_enable_by_author') ) { ?>
 									<?php _e('Posted by' , 'hbthemes'); ?>
 									<span class="entry-author-link" itemprop="name">
