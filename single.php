@@ -66,7 +66,67 @@ if( is_singular ( 'clients' ) ||
 									<?php if ( hb_options('hb_blog_enable_by_author') && hb_options('hb_blog_enable_date') ) { ?>
 									<span class="text-sep">|</span>
 									<?php } ?>
+									<?php /* START AUTHOR BOX CHANGE
+									https://developers.google.com/structured-data/rich-snippets/articles#article_markup_properties */
+									$custom_logo = get_post_meta( get_the_ID(), 'publisher_logo' );
+									$custom_publisher = get_post_meta( get_the_ID(), 'publisher' );
 
+									function imageration($the_image_url,$best_width,$best_height){
+										list($img_width, $img_height, $ing_type, $img_attr) = getimagesize($the_image_url);
+										$the_ratio =$img_width/$img_height; // width/height
+										if( $ratio > 1) {
+										    return array($best_width,$best_width/$the_ratio);
+										}
+										else {
+										    return array($best_height*$the_ratio,$best_height);
+										}
+									}
+									?>
+									<div itemprop="author" itemscope itemtype="https://schema.org/Person">
+										<span itemprop="name"><?php the_author_meta('display_name'); ?></span>
+									</div>
+									<div itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+									<?php
+										$feat_image[0] = hb_options('hb_logo_option');
+										if (has_post_thumbnail( $post->ID ) ){ 
+										$feat_image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'single-post-thumbnail' ); 
+										}
+
+										list ($feature_width,$feature_height) = imageration($feat_image[0],700,700);
+										echo '<meta itemprop="url" content="'.$feat_image[0].'">';
+										echo '<meta itemprop="width" content="'.$feature_width.'">';
+										echo '<meta itemprop="height" content="'.$feature_height.'">';
+									?>
+									</div>
+									<div class="author-info2 hidden" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+									    <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+									    <?php
+											if($custom_logo[0]) {
+												list ($custom_width,$custom_height) = imageration($custom_logo[0],600,60);
+												echo '<meta itemprop="url" content=""'.$custom_logo[0].'">';
+												echo '<meta itemprop="width" content="'.$custom_width.'">';
+											    echo '<meta itemprop="height" content="'.$custom_height.'">';
+											}else{
+												list ($hb_logo_width,$hb_logo_height) = imageration(hb_options('hb_logo_option'),600,60);
+												echo '<meta itemprop="url" content="'.hb_options('hb_logo_option').'">';
+												echo '<meta itemprop="width" content="'.$hb_logo_width.'">';
+											    echo '<meta itemprop="height" content="'.$hb_logo_height.'">';
+											}
+										?>
+										</div>
+										<?php
+									    if($custom_publisher[0]) {
+												echo '<span class="author-box-publisher2 hidden" itemprop="name">'.$custom_publisher[0].'</span>';
+											}else{
+												echo  '<span class="author-box-publisher3 hidden" itemprop="name">';
+												the_author_meta('display_name');
+												echo'</span>';
+											}
+										?>
+									</div>
+									<span class="author-box-datemod2 hidden" itemprop="dateModified"><?php echo get_the_time('M j, Y'); ?></span>
+									<span class="author-box-entryof hidden" itemprop="mainEntityOfPage"><?php echo the_permalink(); ?></span>
+<?php /* END AUTOR BOX CHANGE */?>
 									<?php if ( hb_options('hb_blog_enable_by_author') ) { ?>
 									<?php _e('Posted by' , 'hbthemes'); ?>
 									<span class="entry-author-link" itemprop="name">

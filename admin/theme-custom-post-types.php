@@ -28,6 +28,7 @@ function hb_register_post_types () {
 				'capability_type' => 'post',
 				'hierarchical' => false,
 				'menu_position' => 100,
+				'rewrite' => array( 'slug' => 'network' ),
 				'supports' => array(
 						'editor',
 						'title', 
@@ -216,7 +217,6 @@ function hb_register_post_types () {
 						'page-attributes',
 						'custom-fields',
 						'comments',
-						'excerpt'
 						),
 				'query_var' => true,
 				'exclude_from_search' => false,
@@ -264,51 +264,8 @@ function hb_register_post_types () {
 				'menu_icon' => 'dashicons-format-gallery',
 			)
 		);
-
+		flush_rewrite_rules();
 }
-add_action( 'after_setup_theme', 'hb_register_post_types' , 0);
-
-/**
- * Deregister matching post types.
- */
-function hb_unregister_theme_post_types() {
-    global $wp_post_types;
-
-    $post_types_to_ur = array();
-    
-    if ( !hb_module_enabled('hb_module_pricing_tables') ) {
-    	$post_types_to_ur[] = 'hb_pricing_table';
-    }
-
-    if ( !hb_module_enabled('hb_module_portfolio') ) {
-    	$post_types_to_ur[] = 'portfolio';
-    }
-
-    if ( !hb_module_enabled('hb_module_gallery') ) {
-    	$post_types_to_ur[] = 'gallery';
-    }
-
-    if ( !hb_module_enabled('hb_module_faq') ) {
-    	$post_types_to_ur[] = 'faq';
-    }
-
-    if ( !hb_module_enabled('hb_module_testimonials') ) {
-    	$post_types_to_ur[] = 'hb_testimonials';
-    }
-
-    if ( !hb_module_enabled('hb_module_clients') ) {
-    	$post_types_to_ur[] = 'clients';
-    }
-
-    if ( !hb_module_enabled('hb_module_team_members') ) {
-    	$post_types_to_ur[] = 'team';
-    }
-
-    foreach( $post_types_to_ur as $post_type ) {
-        if ( isset( $wp_post_types[ $post_type ] ) ) {
-            unset( $wp_post_types[ $post_type ] );
-        }
-    }
-}
-add_action( 'init', 'hb_unregister_theme_post_types', 20 );
+add_action( 'init', 'hb_register_post_types' , 0);
+add_action( 'after_switch_theme', 'hb_register_post_types' );
 ?>

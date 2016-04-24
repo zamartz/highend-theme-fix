@@ -110,6 +110,9 @@
 			$image_width = 1140;
 			$full_image = wp_get_attachment_image_src( $thumb, 'full', false );
 
+			$srcset_value = wp_get_attachment_image_srcset( get_post_thumbnail_id() , 'medium' );
+			$srcset = $srcset_value ? ' srcset="' . esc_attr( $srcset_value ) . '"' : '';
+
 			if ( vp_metabox('layout_settings.hb_page_layout_sidebar') )
 				$image_width = 832;
 			$image = hb_resize( $thumb, '', $image_width, $image_height, true );
@@ -118,7 +121,7 @@
 		?>
 		<div class="featured-image">
 			<a data-title="<?php the_title(); ?>" href="<?php echo $full_image[0]; ?>" rel="prettyPhoto">
-				<img itemprop="image" src="<?php echo $image['url']; ?>" alt="<?php the_title(); ?>" title="<?php the_title(); ?>" />
+				<img src="<?php echo $full_image[0]; ?>" <?php echo $srcset; ?> alt="<?php the_title(); ?>" title="<?php the_title(); ?>" />
 				<div class="item-overlay"></div>
 				<div class="item-overlay-text">
 					<div class="item-overlay-text-wrap">
@@ -147,8 +150,10 @@
 						$api_images .= "'" . addslashes ($gallery_image['url']) . "',";
 						$api_titles .= "'" . addslashes ($gallery_image['title']) . "',";
 						$api_descriptions .= "'" . addslashes ($gallery_image['description']) . "',";
+						$srcset_value = wp_get_attachment_image_srcset( $id , 'medium' );
+						$srcset = $srcset_value ? ' srcset="' . esc_attr( $srcset_value ) . '"' : '';
 					?>
-					<li><a href="#" class="prettyphoto"><img alt="<?php echo $gallery_image['title']; ?>" src="<?php echo $image['url']; ?>"/></a></li>
+					<li><a href="#" class="prettyphoto"><img alt="<?php echo $gallery_image['title']; ?>" src="<?php echo $image['url']; ?>" <?php echo $srcset; ?>/></a></li>
 					<?php } 
 					$api_images = trim($api_images, ",");
 					$api_titles = trim($api_titles, ",");
@@ -196,6 +201,9 @@
 			$image_width = 1140;
 			$full_image = wp_get_attachment_image_src( $thumb, 'full', false );
 
+			$srcset_value = wp_get_attachment_image_srcset( get_post_thumbnail_id() , 'medium' );
+			$srcset = $srcset_value ? ' srcset="' . esc_attr( $srcset_value ) . '"' : '';
+
 			if ( vp_metabox('layout_settings.hb_page_layout_sidebar') )
 				$image_width = 832;
 			$image = hb_resize( $thumb, '', $image_width, $image_height, true );
@@ -203,7 +211,7 @@
 			?>
 		<div class="featured-image">
 			<a data-title="<?php the_title(); ?>" href="<?php echo $full_image[0]; ?>" rel="prettyPhoto">
-				<img itemprop="image" src="<?php echo $image['url']; ?>" alt="<?php the_title(); ?>" title="<?php the_title(); ?>"/>
+				<img src="<?php echo $full_image[0]; ?>" <?php echo $srcset; ?> alt="<?php the_title(); ?>" title="<?php the_title(); ?>" />
 				<div class="item-overlay"></div>
 				<div class="item-overlay-text">
 					<div class="item-overlay-text-wrap">

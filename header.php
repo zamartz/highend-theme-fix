@@ -9,12 +9,29 @@
 
 	<!-- START head -->
 	<head>
+	<?php
+	// WordPress 4.1 Title tag backwards compatibility
+	if ( ! function_exists( '_wp_render_title_tag' ) ) {
+		function hbthemes_render_title() {
+	?>
+			<title><?php wp_title( '|', true, 'right' ); ?></title>
+	<?php }
+		add_action( 'wp_head', 'hbthemes_render_title' );
+	} ?>
 	<meta charset="<?php bloginfo('charset'); ?>">
 	<?php if ( hb_options('hb_responsive') ) { ?>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<?php } ?>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="google-site-verification" content="Fp7HiGwKo4ui_wsus54jkB6jXHmdAvDfRu2cEzkhBKs" />
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
+
+	<?php
+	$favicon = hb_options('hb_favicon');
+
+	if ( $favicon ) { ?>
+	<link rel="shortcut icon" href="<?php echo $favicon; ?>" />
+	<?php } ?>
 
 	<?php if (hb_options('hb_apple_icon_144')) { ?>
 	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="<?php echo hb_options('hb_apple_icon_144'); ?>" />
@@ -33,9 +50,15 @@
 	<meta name="apple-mobile-web-app-title" content="<?php echo hb_options('hb_ios_bookmark_title'); ?>">
 	<?php } ?>
 
-	<!--[if lte IE 8]>
+	<!--[if IE 8 ]>
+	<link href="<?php echo get_template_directory_uri(); ?>/css/ie8.css" media="screen" rel="stylesheet" type="text/css">
+	<![endif]-->
+
+	<!--[if lte IE 9]>
 	<script src="<?php echo get_template_directory_uri(); ?>/scripts/html5shiv.js" type="text/javascript"></script>
 	<![endif]-->
+
+	<link rel="stylesheet" href="<?php bloginfo( 'stylesheet_url' ); ?>" type="text/css" media="screen,print" />
 
 	<?php wp_head(); ?>
 
@@ -48,7 +71,7 @@
 		$font_subsets = hb_options('hb_font_body_subsets');
 
 
-		// Disable Content Area if selected in Metabox settings
+		// Disable Content Area if selected in Meta settings
 		if ( vp_metabox('layout_settings.hb_content_area') == 'hide' && ( !is_search() && !is_archive() )){
 			echo '#main-content { display:none; }
 			#slider-section { top:0px; }';
@@ -59,7 +82,7 @@
 			$font_face = hb_options('hb_font_body_face');
 			$font_weight = hb_options('hb_font_body_weight');
 			VP_Site_GoogleWebFont::instance()->add($font_face, $font_weight, $font_style, $font_subsets);
-			echo 'body, .team-position, .hb-single-next-prev .text-inside, .hb-dropdown-box.cart-dropdown .buttons a, input[type=text], textarea, input[type=email], input[type=password], input[type=tel], #fancy-search input[type=text], #fancy-search .ui-autocomplete li .search-title, .quote-post-format .quote-post-wrapper blockquote, table th, .hb-button, input[type=submit], a.read-more, blockquote.pullquote, blockquote, .hb-skill-meter .hb-skill-meter-title, .hb-tabs-wrapper .nav-tabs li a, #main-wrapper .coupon-code input.button,#main-wrapper .form-row input.button,#main-wrapper input.checkout-button,#main-wrapper input.hb-update-cart,.woocommerce-page #main-wrapper .shipping-calculator-form-hb button.button, .hb-accordion-pane, .hb-accordion-tab {
+			echo 'body, .team-position, .hb-single-next-prev .text-inside, .hb-dropdown-box.cart-dropdown .buttons a, input[type=text], textarea, input[type=email], input[type=password], input[type=tel], #fancy-search input[type=text], #fancy-search .ui-autocomplete li .search-title, .quote-post-format .quote-post-wrapper blockquote, table th, .hb-button, input[type=submit], a.read-more, blockquote.pullquote, blockquote, .hb-skill-meter .hb-skill-meter-title, .hb-tabs-wrapper .nav-tabs li a, #main-wrapper .coupon-code input.button,#main-wrapper .form-row input.button,#main-wrapper input.checkout-button,#main-wrapper input.hb-update-cart,.woocommerce-page #main-wrapper .shipping-calculator-form-hb button.button {
 				font-family: "' . $font_face . '", sans-serif;
 				font-size: '. hb_options('hb_font_body_size') .'px;
 				line-height: '. hb_options('hb_font_body_line_height') .'px;
@@ -133,7 +156,7 @@
 			$font_face = hb_options('hb_font_h1_face');
 			$font_weight = hb_options('hb_font_h1_weight');
 			VP_Site_GoogleWebFont::instance()->add($font_face, $font_weight, $font_style, $font_subsets);
-			echo 'h1, article.single h1.title, #hb-page-title .light-text h1, #hb-page-title .dark-text h1 {
+			echo 'h1, article.single h1.title {
 				font-family: "' . $font_face . '", sans-serif;
 				font-size: '. hb_options('hb_font_h1_size') .'px;
 				line-height: '. hb_options('hb_font_h1_line_height') .'px;
@@ -254,8 +277,6 @@
 	?>
 	</style>
 
-	<title><?php wp_title(''); ?></title>
-
 	</head>
 	<!-- END head -->
 
@@ -362,8 +383,6 @@
 		if ( hb_options('hb_search_style') == 'hb-modern-search')
 			$extra_body_class .= ' hb-modern-search';
 
-		if ( hb_module_enabled ('hb_module_prettyphoto') ) 
-			$extra_body_class .= ' highend-prettyphoto';
 
 		$extra_body_class .= ' ' . $hb_layout_class;
 
@@ -371,6 +390,9 @@
 
 	<!-- START body -->
 	<body <?php body_class($extra_body_class); echo $fixed_footer_class; echo $bg_image_render; ?> itemscope="itemscope" itemtype="http://schema.org/WebPage">
+
+	<!-- google Tag manager -->
+	<?php if ( function_exists( 'gtm4wp_the_gtm_tag' ) ) { gtm4wp_the_gtm_tag(); } ?>
 
 	<?php 
 	if ( hb_options('hb_queryloader') == 'circle-spinner' ) { ?>
