@@ -74,7 +74,7 @@ if( is_singular ( 'clients' ) ||
 									function imageration($the_image_url,$best_width,$best_height){
 										list($img_width, $img_height, $ing_type, $img_attr) = getimagesize($the_image_url);
 										$the_ratio =$img_width/$img_height; // width/height
-										if( $ratio > 1) {
+										if( $the_ratio > 1) {
 										    return array($best_width,$best_width/$the_ratio);
 										}
 										else {
