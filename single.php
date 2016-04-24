@@ -98,7 +98,7 @@ if( is_singular ( 'clients' ) ||
 										echo '<meta itemprop="height" content="'.$feature_height.'">';
 									?>
 									</div>
-									<div class="author-info2 hidden" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+									<div class="publisher-info-update hidden"  itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
 									    <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
 									    <?php
 											if($custom_logo[0]) {
